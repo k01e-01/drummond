@@ -60,21 +60,21 @@ fn use_loopback(
         let port_name = midi_input.port_name(&port)?;
 
         info!("port '{}' with id '{}'", port_name, port_id);
-        port_map.insert(port_id, port);
+        port_map.insert(port_name, port);
     }
 
-    let port_id = rl.readline("id of port to connect to? > ")?;
+    let port_name = rl.readline("name of port to connect to? > ")?;
 
-    if !port_map.contains_key(&port_id) {
-        error!("unknown port '{}'", port_id);
+    if !port_map.contains_key(&port_name) {
+        error!("unknown port '{}'", port_name);
         return Err(anyhow!("unknown port"));
     }
 
-    let port = port_map.get(&port_id).unwrap();
+    let port = port_map.get(&port_name).unwrap();
 
     let midi_connection = midi_input
         .connect(port, "drummond_connection", handle_event, serial_port)
-        .map_err(|_| anyhow!("failed to connect to {}", port_id))?;
+        .map_err(|_| anyhow!("failed to connect to {}", port_name))?;
 
     info!("opened midi connection");
 
